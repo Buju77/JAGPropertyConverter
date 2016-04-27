@@ -56,8 +56,10 @@ JAGPropertyConverter *converter;
     user.firstName = @"John";
     user.lastName = @"Jacobs";
     user.age = 55;
+    user.boolValue = YES;
+    user.boolNumber = @YES;
     
-    NSDictionary *targetDict = @{ @"age" : @55, @"firstName" : @"John", @"lastName" : @"Jacobs" };
+    NSDictionary *targetDict = @{ @"age" : @55, @"firstName" : @"John", @"lastName" : @"Jacobs", @"boolValue" : @"true", @"boolNumber" : @"true" };
     NSDictionary *userJsonDict = [converter decomposeObject:user];
     XCTAssertEqualObjects(userJsonDict, targetDict, @"Converter decomposes model objects to JSON-compliant dictionaries.");
 }

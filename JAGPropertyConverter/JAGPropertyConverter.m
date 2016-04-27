@@ -112,7 +112,14 @@
         return object;    
     } else if ([object isKindOfClass: [NSNumber class]]) {
         if ( self.outputType == kJAGJSONOutput ) {
-            if ( isfinite([object doubleValue]) ) {
+            if (object == (void*)kCFBooleanFalse) {
+                // num is boolean
+                return @"false";
+            } else if (object == (void*)kCFBooleanTrue) {
+                // num is boolean
+                return @"true";
+            } else if ( isfinite([object doubleValue]) ) {
+                // num is not boolean
                 return object;
             } else {
                 //JSON cannot handle +-infinity or NaN

@@ -20,11 +20,13 @@
 @property (copy)    NSString        *firstName;
 @property (copy)    NSString        *lastName;
 @property (assign)  int             age;
+@property (assign)  BOOL            boolValue;
 @property (strong)  Address         *addressInformation;
 @property (strong)  NSDate          *dob;
 @property (strong)  NSArray         *favorites;
 @property (strong)  NSDictionary    *information;
 @property (strong)  NSData          *encodedInformation;
+@property (strong)  NSNumber        *boolNumber;
 @end
 
 @interface CustomAddress : Address <JAGPropertyMapping>
