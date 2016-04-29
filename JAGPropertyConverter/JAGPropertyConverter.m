@@ -93,13 +93,13 @@
 }
 
 - (id) decomposeObject: (id) object {
-    return [self recursiveDecomposeObject:object];
+    return [self recursiveDecomposeObject:object shouldIgnoreNilValues:self.shouldIgnoreNullValues];
 }
 
 // created a private recursive method so subclasses of JAGPropertyConverter can simply override the public method (decomposeObject:) to do additional pre- and/or post-processing.
-- (id) recursiveDecomposeObject: (id) object {
+- (id) recursiveDecomposeObject: (id) object shouldIgnoreNilValues:(BOOL)shouldIgnoreNilValues {
     if (!object) {
-        if (self.shouldIgnoreNullValues) {
+        if (shouldIgnoreNilValues) {
             return nil;
         }
         
@@ -163,7 +163,7 @@
     } else if ([object isKindOfClass: [NSArray class]]) {
         NSMutableArray *array = [NSMutableArray array];
         for (id obj in object) {
-            id value = [self recursiveDecomposeObject:obj];
+            id value = [self recursiveDecomposeObject:obj shouldIgnoreNilValues:YES]; // doesn't matter what we pass in, NSArray, NSSet and NSDictionary can't hold nil values anyway
             if (value) {
                 [array addObject: value];
             } else {
@@ -180,7 +180,7 @@
             collection = [NSMutableSet set];
         }
         for (id obj in object) {
-            id value = [self recursiveDecomposeObject:obj];
+            id value = [self recursiveDecomposeObject:obj shouldIgnoreNilValues:YES]; // doesn't matter what we pass in, NSArray, NSSet and NSDictionary can't hold nil values anyway
             if (value) {
                 [collection addObject: value];
             } else {
@@ -195,9 +195,9 @@
                 NSLog(@"JSON dictionaries must have string keys, skipping key %@", key);
                 continue;
             }
-            id value = [self recursiveDecomposeObject:[object objectForKey: key]];
+            id value = [self recursiveDecomposeObject:object[key] shouldIgnoreNilValues:YES]; // doesn't matter what we pass in, NSArray, NSSet and NSDictionary can't hold nil values anyway
             if (value) {
-                [dict setObject: [self recursiveDecomposeObject: value] forKey: key];
+                dict[key] = value;
             } else {
                 NSLog(@"Unable to convert %@ to properties.", [object objectForKey: key]);
             }
@@ -227,6 +227,12 @@
     
     // get all properties which should be ignored
     NSArray *ignoreProperties = [self getCombinedArrayFromAllInheritanceForObject:model classSelector:@selector(ignorePropertiesToJSON)];
+    
+    // get all properties which should NOT be ignored when property value is nil (return NSNull in dictionary)
+    NSArray<NSString *> *nilPropertiesNotToIgnore = nil;
+    if (self.shouldIgnoreNullValues) {
+        nilPropertiesNotToIgnore = [self getCombinedArrayFromAllInheritanceForObject:model classSelector:@selector(nilPropertiesNotToIgnore)];
+    }
 
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
     NSArray* properties = [JAGPropertyFinder propertiesForClass:[model class]];
@@ -277,8 +283,14 @@
             propertyName = [propertyName asUnderscoreFromCamelCase];
         }
         
+        // check if we need to convert nil values into NSNull
+        BOOL shouldIgnoreNilValues = self.shouldIgnoreNullValues;
+        if (self.shouldIgnoreNullValues && [nilPropertiesNotToIgnore containsObject:propertyName]) {
+            shouldIgnoreNilValues = NO;
+        }
+        
         // set value in dictionary
-        [values setValue:[self recursiveDecomposeObject: object] forKey:propertyName];
+        [values setValue:[self recursiveDecomposeObject:object shouldIgnoreNilValues:shouldIgnoreNilValues] forKey:propertyName];
     }
 
     // Add all custom keypaths defined for the model.
@@ -286,7 +298,11 @@
         for (NSString *customKey in customMapping) {
             BOOL isKeyPath = [self _isKeyPathKey:customKey];
             if (isKeyPath) {
-                [values setValue:[self recursiveDecomposeObject:[model valueForKeyPath:customKey]] forKey:customMapping[customKey]];
+                BOOL shouldIgnoreNilValues = self.shouldIgnoreNullValues;
+                if (self.shouldIgnoreNullValues && [nilPropertiesNotToIgnore containsObject:customKey]) {
+                    shouldIgnoreNilValues = NO;
+                }
+                [values setValue:[self recursiveDecomposeObject:[model valueForKeyPath:customKey] shouldIgnoreNilValues:shouldIgnoreNilValues] forKey:customMapping[customKey]];
             }
         }
     }
@@ -412,6 +428,12 @@
     NSDictionary *enumMapping = [self getCombinedDictionaryFromAllInheritanceForObject:object classSelector:@selector(enumPropertiesToConvert)];
     enumMapping = [enumMapping swapKeysWithValues];
     
+    // see if we should reset property value if value is NSNull
+    NSArray<NSString *> *optInPropertiesToNotIgnore = nil;
+    if (self.shouldIgnoreNullValues) {
+        optInPropertiesToNotIgnore = [self getCombinedArrayFromAllInheritanceForObject:object classSelector:@selector(nilPropertiesNotToIgnore)];
+    }
+    
     for (NSString *dictKey in dictionary) {
         BOOL isKeyPath = NO;
         NSString *remainingKeyPath = nil;
@@ -428,15 +450,16 @@
         // NSNull handling
         if ([value isKindOfClass:[NSNull class]]) {
             if (self.shouldIgnoreNullValues) {
-                // ignore NSNull values (leave property value as is)
+                BOOL shouldResetValueIfNil = [optInPropertiesToNotIgnore containsObject:property.name];
+                if (shouldResetValueIfNil) {
+                    [self _clearObjectValue:object forProperty:property];
+                    continue;
+                }
+                // otherwise ignore NSNull values (leave property value as is)
                 continue;
             } else {
                 // clear property value (set property to nil)
-                if ([property isNumber]) {
-                    [object setValue:@(0) forKey:property.name]; // for primitive data types we still need an object
-                } else {
-                    [object setValue:nil forKey:property.name];
-                }
+                [self _clearObjectValue:object forProperty:property];
                 continue;
             }
         }
@@ -636,6 +659,15 @@
 
 - (BOOL)_isKeyPathKey:(NSString *)key {
     return [key rangeOfString:@"."].location != NSNotFound;
+}
+
+// clear property value (set property to nil or 0 if it is primitive data type)
+- (void)_clearObjectValue:(id)object forProperty:(JAGProperty *)property {
+    if ([property isNumber]) {
+        [object setValue:@(0) forKey:property.name]; // for primitive data types we still need an object
+    } else {
+        [object setValue:nil forKey:property.name];
+    }
 }
 
 @end
