@@ -8,6 +8,7 @@ Pod::Spec.new do |s|
   s.source   = { :git => 'https://github.com/jagill/JAGPropertyConverter.git', :tag => '0.2.0' }
   s.description = 'With minimal configuration, JAGPropertyConverter allows easy persistence, copying, or API serialization of your Model objects.  It also allows run-time querying of an object\'s properties and their attributes.'
   s.platform = :ios
+  s.platform = :tvos
   s.source_files = 'JAGPropertyConverter'
   s.requires_arc = true
 end
