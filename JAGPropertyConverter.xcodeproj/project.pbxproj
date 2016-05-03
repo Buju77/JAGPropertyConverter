@@ -29,6 +29,9 @@
 		890F5D441B5948A400246901 /* NSDictionary+JAGKeyValueSwapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F5D421B5948A400246901 /* NSDictionary+JAGKeyValueSwapping.m */; };
 		890F5D451B5948A400246901 /* NSDictionary+JAGKeyValueSwapping.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F5D421B5948A400246901 /* NSDictionary+JAGKeyValueSwapping.m */; };
 		890F5D471B594A4F00246901 /* DictionarySwappingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 890F5D461B594A4F00246901 /* DictionarySwappingTest.m */; };
+		891AE7481CD8D71700206542 /* SubclassModelTestData.json in Resources */ = {isa = PBXBuildFile; fileRef = 891AE7471CD8D71700206542 /* SubclassModelTestData.json */; };
+		891AE74F1CD8DE4200206542 /* NSDictionary+JsonString.m in Sources */ = {isa = PBXBuildFile; fileRef = 891AE74E1CD8DE4200206542 /* NSDictionary+JsonString.m */; };
+		891AE7541CD8E0BD00206542 /* JsonDescriptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 891AE7531CD8E0BD00206542 /* JsonDescriptionTests.m */; };
 		891B9BCD1B554CE000DF255E /* JAGPropertyConverter+Subclass.h in Headers */ = {isa = PBXBuildFile; fileRef = 891B9BCB1B554CE000DF255E /* JAGPropertyConverter+Subclass.h */; };
 		898EB2661CD11BCB00F2A9BA /* OptInNullValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898EB2651CD11BCB00F2A9BA /* OptInNullValues.swift */; };
 		89C0B7971A275E84007AA954 /* NSString+JAGSnakeCaseSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 89C0B7951A275E84007AA954 /* NSString+JAGSnakeCaseSupport.h */; };
@@ -86,6 +89,10 @@
 		890F5D421B5948A400246901 /* NSDictionary+JAGKeyValueSwapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+JAGKeyValueSwapping.m"; sourceTree = "<group>"; };
 		890F5D461B594A4F00246901 /* DictionarySwappingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DictionarySwappingTest.m; sourceTree = "<group>"; };
 		891AE7461CD8C55800206542 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		891AE7471CD8D71700206542 /* SubclassModelTestData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = SubclassModelTestData.json; path = JAGPropertyConverterTests/SubclassModelTestData.json; sourceTree = SOURCE_ROOT; };
+		891AE74D1CD8DE4200206542 /* NSDictionary+JsonString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+JsonString.h"; sourceTree = "<group>"; };
+		891AE74E1CD8DE4200206542 /* NSDictionary+JsonString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+JsonString.m"; sourceTree = "<group>"; };
+		891AE7531CD8E0BD00206542 /* JsonDescriptionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonDescriptionTests.m; sourceTree = "<group>"; };
 		891B9BCB1B554CE000DF255E /* JAGPropertyConverter+Subclass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JAGPropertyConverter+Subclass.h"; sourceTree = "<group>"; };
 		898EB2641CD11BCA00F2A9BA /* JAGPropertyConverterTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JAGPropertyConverterTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		898EB2651CD11BCB00F2A9BA /* OptInNullValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptInNullValues.swift; sourceTree = "<group>"; };
@@ -186,6 +193,7 @@
 			children = (
 				11E60F57160B96FE000BD25F /* ExampleTest.h */,
 				11E60F58160B96FE000BD25F /* ExampleTest.m */,
+				891AE7491CD8DE0000206542 /* Helpers */,
 				11275B8114E9D8BD00C4707C /* JAGPropertyConverterTest.h */,
 				11275B8214E9D8BD00C4707C /* JAGPropertyConverterTest.m */,
 				89C7085B1BDAF3FB00749C93 /* JAGPropertyConverterSubclassTest.m */,
@@ -194,6 +202,7 @@
 				11275B8414E9D8BD00C4707C /* JAGPropertyFinderTest.m */,
 				11275B8514E9D8BD00C4707C /* JAGPropertyTest.h */,
 				11275B8614E9D8BD00C4707C /* JAGPropertyTest.m */,
+				891AE7531CD8E0BD00206542 /* JsonDescriptionTests.m */,
 				89DED05E1A7AB2C5009BF46F /* Models */,
 				89DED0581A7AAEDD009BF46F /* NullValuesTest.m */,
 				11E60F53160A7436000BD25F /* NumberFormatterTest.h */,
@@ -219,6 +228,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		891AE7491CD8DE0000206542 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				891AE74D1CD8DE4200206542 /* NSDictionary+JsonString.h */,
+				891AE74E1CD8DE4200206542 /* NSDictionary+JsonString.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		89DED05E1A7AB2C5009BF46F /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -228,6 +246,7 @@
 				89DED0621A7AB2C5009BF46F /* TestModel.m */,
 				890F5D3C1B5903D000246901 /* TestModelCustomSubclass.h */,
 				890F5D3D1B5903D000246901 /* TestModelCustomSubclass.m */,
+				891AE7471CD8D71700206542 /* SubclassModelTestData.json */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -320,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				11275B6914E9D56200C4707C /* InfoPlist.strings in Resources */,
+				891AE7481CD8D71700206542 /* SubclassModelTestData.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				891AE7541CD8E0BD00206542 /* JsonDescriptionTests.m in Sources */,
 				890F5D401B59054100246901 /* SubclassCustomPropertyMappingTest.m in Sources */,
 				89DED0631A7AB2C5009BF46F /* NumberTestModel.m in Sources */,
 				890F5D471B594A4F00246901 /* DictionarySwappingTest.m in Sources */,
@@ -360,6 +381,7 @@
 				890F5D3E1B5903D000246901 /* TestModelCustomSubclass.m in Sources */,
 				11E60F55160A7436000BD25F /* NumberFormatterTest.m in Sources */,
 				11E60F59160B96FE000BD25F /* ExampleTest.m in Sources */,
+				891AE74F1CD8DE4200206542 /* NSDictionary+JsonString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
