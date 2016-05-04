@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @note This method is only used if `converter.shouldIgnoreNullValues == YES`
  
- @return Array of property names to not be ignored when serializing nil values.
+ @return Array of original model property names to not be ignored when serializing nil values.
  */
 + (NSArray<NSString *> *)nilPropertiesNotToIgnore;
 

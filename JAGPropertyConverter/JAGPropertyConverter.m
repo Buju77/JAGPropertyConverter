@@ -285,7 +285,7 @@
         
         // check if we need to convert nil values into NSNull
         BOOL shouldIgnoreNilValue = self.shouldIgnoreNullValues;
-        if (self.shouldIgnoreNullValues && [nilPropertiesNotToIgnore containsObject:propertyName]) {
+        if (shouldIgnoreNilValue && [nilPropertiesNotToIgnore containsObject:[property name]]) { // using original model property name and not custom or snake_case version
             shouldIgnoreNilValue = NO;
         }
         
@@ -299,7 +299,7 @@
             BOOL isKeyPath = [self _isKeyPathKey:customKey];
             if (isKeyPath) {
                 BOOL shouldIgnoreNilValue = self.shouldIgnoreNullValues;
-                if (self.shouldIgnoreNullValues && [nilPropertiesNotToIgnore containsObject:customKey]) {
+                if (shouldIgnoreNilValue && [nilPropertiesNotToIgnore containsObject:customKey]) {
                     shouldIgnoreNilValue = NO;
                 }
                 [values setValue:[self recursiveDecomposeObject:[model valueForKeyPath:customKey] shouldIgnoreNilValue:shouldIgnoreNilValue] forKey:customMapping[customKey]];

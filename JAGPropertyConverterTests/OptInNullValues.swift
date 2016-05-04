@@ -18,6 +18,10 @@ class OptInNullValueTestModel: NSObject, JAGPropertyMapping {
     static func nilPropertiesNotToIgnore() -> [String] {
         return ["stringProperty", "arrayProperty"]
     }
+    
+    static func customPropertyNamesMapping() -> [String : String] {
+        return ["stringProperty" : "strProperty"]
+    }
 }
 
 /// This tests the new feature to opt-in sending null values if a property is nil when `converter.shouldIgnoreNullValues == true`
@@ -34,6 +38,7 @@ class OptInNullValues: XCTestCase {
         converter.outputType = .JAGJSONOutput
         converter.classesToConvert = NSSet(array: [OptInNullValueTestModel.self]) as Set<NSObject>
         converter.shouldIgnoreNullValues = true
+        converter.enableSnakeCaseSupport = true
         
         let formatter = NSNumberFormatter()
         formatter.locale = NSLocale(localeIdentifier: "en")
@@ -45,14 +50,14 @@ class OptInNullValues: XCTestCase {
         model.intProperty = 1337
         model.stringProperty = "Unicorns! 🦄🦄🦄"
         model.numberProperty = 7777
-        model.arrayProperty = ["🌰🌰🌰"]
+        model.arrayProperty = ["🌰🌰🌰"] // nuts! ;)
         
         XCTAssertEqual(model.intProperty, 1337)
         XCTAssertEqual(model.stringProperty, "Unicorns! 🦄🦄🦄")
         XCTAssertEqual(model.numberProperty, 7777)
         XCTAssertEqual(model.arrayProperty!, ["🌰🌰🌰"])
         
-        let dict = [ "intProperty" : NSNull(), "stringProperty" : NSNull(), "arrayProperty" : NSNull() ]    // leave out numberProperty; we don't want to touch it
+        let dict = [ "intProperty" : NSNull(), "strProperty" : NSNull(), "arrayProperty" : NSNull() ]    // leave out numberProperty; we don't want to touch it
         
         converter.setPropertiesOf(model, fromDictionary: dict)
         
@@ -74,7 +79,7 @@ class OptInNullValues: XCTestCase {
         XCTAssertNil(model.arrayProperty)
         
         let dict = converter.decomposeObject(model) as! NSDictionary
-        let expectedDict = [ "intProperty" : 42, "stringProperty" : NSNull(), "arrayProperty" : NSNull() ] // only stringProperty is optIn; so numberProperty will be ignored (= not in dict)
+        let expectedDict = [ "int_property" : 42, "str_property" : NSNull(), "array_property" : NSNull() ] // only stringProperty is optIn; so numberProperty will be ignored (= not in dict)
         
         XCTAssertEqual(dict, expectedDict)
     }
